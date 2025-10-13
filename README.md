@@ -4,28 +4,28 @@
 
 O **Pipeline de Análise e Monitoramento de Focos de Queimadas** consiste em uma infraestrutura de dados (Data Pipeline) projetada para automatizar a ingestão, o processamento e a consolidação de dados históricos de focos de queimadas (incêndios florestais).
 
-Esta aplicação foi desenvolvida como parte da atividade prática para demonstrar a implementação da camada **Bronze** de um Data Lake (Lakehouse/Medallion Architecture) em um ambiente simulado. O objetivo final é criar uma base de dados limpa, particionada e consolidada em formato parquet, que servirá como fonte de dados confiável para análises geoespaciais e relatórios.
+Esta aplicação foi desenvolvida como parte da atividade prática para demonstrar a implementação até camada **Silver** de um Data Lake (Lakehouse/Medallion Architecture) em um ambiente simulado. O objetivo final é criar uma base de dados limpa, particionada e consolidada em formato parquet, que servirá como fonte de dados confiável para análises geoespaciais e relatórios.
 
-### 🔗 Arquitetura Implementada (Camada Bronze)
+### 🔗 Arquitetura Implementada 
 
 O pipeline implementado no ambiente simulado (Google Colab) estabelece a camada **Bronze** do Data Lake com as seguintes características:
 
-| Etapa | Fluxo de Dados | Lógica Implementada |
-| :--- | :--- | :--- |
-| **Ingestão** | Google Drive (Fonte) → Bronze Raw | Cópia de arquivos CSV de uma fonte externa (Drive) para o ambiente de processamento. |
-| **Armazenamento Raw** | Bronze Raw | Estrutura de particionamento hierárquico por data (`ano={yyyy}/mes={mm}`) para os CSVs originais. |
-| **Transformação** | Bronze Raw → Bronze Current | Concatenamento de DataFrames, enriquecimento com metadados (`ano`, `mes`) e aplicação de **impenência** (remoção de duplicatas). |
-| **Armazenamento Final** | Bronze Current | Salvamento do conjunto de dados limpo e consolidado no formato **Parquet** e CSV. |
+| Etapa | Lógica Implementada |
+| :--- | :--- |
+| **Ingestão** | Cópia de arquivos CSV de uma fonte externa (Drive) para o ambiente de processamento. |
+| **Armazenamento Raw** | Estrutura de particionamento hierárquico por data (`ano={yyyy}/mes={mm}`) para os CSVs originais. |
+| **Transformação**| Concatenamento de DataFrames, enriquecimento com metadados (`ano`, `mes`) e aplicação de **impenência** (remoção de duplicatas). |
+| **Armazenamento Final**  | Salvamento do conjunto de dados limpo e consolidado no formato **Parquet** e CSV. |
 
 ### 🛠 Tecnologias Utilizadas
 
 | Camada | Tecnologias Atuais (Open Source/Simuladas) |
 | :--- | :--- |
-| **Linguagem/Processamento** | Python, Pandas |
+| **Linguagem/Processamento** | Python, Pandas, Dask, cuDF |
 | **Ambiente/Orquestração** | Google Colab (Execução manual/interativa) |
 | **Armazenamento (Fonte/Destino)** | Google Drive (Fonte), File System do Colab (Destino), CSV, Parquet |
 
-<img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="python"/> &nbsp; <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas"/> &nbsp; <img src="https://img.shields.io/badge/apache%20parquet-2A62AA?style=for-for-the-badge&logo=apache&logoColor=white" alt="Parquet"/>
+<img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="python"/> &nbsp; <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas"/> &nbsp;  <img src="https://img.shields.io/badge/Dask-F8766D?style=for-the-badge&logo=dask&logoColor=white" alt="Dask"/> &nbsp; <img src="https://img.shields.io/badge/cuDF-7097C2?style=for-the-badge&logo=nvidia&logoColor=white" alt="cuDF"/>
 
 ### 🚀 Sugestões de Refinamento (Tecnologias Pagas/Gerenciadas)
 
@@ -52,7 +52,7 @@ As instruções a seguir pressupõem a execução no ambiente interativo do Goog
 # drive.mount('/content/drive')
 
 # 4. Executar o pipeline de Ingestão:
-#    - Criação da estrutura de pastas de destino (Bronze Raw, Bronze Current).
+#    - Criação da estrutura de pastas de destino.
 #    - Cópia dos CSVs da fonte para a pasta Bronze Raw particionada.
 
 # 5. Executar o pipeline de Transformação:
