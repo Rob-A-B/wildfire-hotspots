@@ -90,10 +90,10 @@ A implementação atual no `queimadas.ipynb` reflete a conclusão das seguintes 
 
 | Membro da Equipe | Função | Tarefas e Responsabilidades |
 | :--- | :--- | :--- |
-| **Julio Padilha** | **gay** | habla aqui |
-| **Matheus Bione** | **gay** | habla aqui |
-| **Nicole Victory** | **not gay** | habla aqui |
-| **Roberto Arruda** | **gay** | habla aqui |
+| **Julio Padilha** | **Engenheiro de dados(Otimização e Escalabilidade do Pipeline)** | Expandiu o dataset de 1 para 22 meses, realizando a concatenação e integração de arquivos. Implementou soluções de otimização de desempenho e memória com Dask e cuDF, aproveitando o processamento paralelo e o uso da GPU do Colab. |
+| **Matheus Bione** | **Suporte Técnico** | Verificando se os dados transformados mantêm integridade em relação à ingestão original. Realizou a organização de diretórios, limpeza de arquivos duplicados e padronização de nomes dentro do projeto. |
+| **Nicole Victory** | **Analista de dados(validação e qualidade dos dados)** | Criou scripts para verificação e limpeza dos datasets após a ingestão na camada Bronze, garantindo que os arquivos contenham as colunas esperadas e sem valores nulos críticos. Gerou relatórios automáticos de estatísticas e qualidade dos dados (profiling) para documentação e análise. |
+| **Roberto Arruda** | **Cientista de Dados (Ingestão e Modelagem)** |  Realizou a ingestão inicial dos dados, estruturando o pipeline nas camadas Bronze, Silver e Gold. Foi responsável pela organização da arquitetura de pastas, padronização do fluxo de dados e pela criação das primeiras transformações entre as camadas. |
 
 
 ***
