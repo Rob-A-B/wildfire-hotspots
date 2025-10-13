@@ -91,6 +91,9 @@ A implementação atual no `queimadas.ipynb` reflete a conclusão das seguintes 
 | **Ingestão** | **(x) Finalizado** (Cópia da fonte para o Bronze Raw) |
 | **Armazenamento** | **(x) Finalizado** (Estrutura de Data Lake Bronze implementada) |
 | **Transformação** | **(x) Finalizado** (Limpeza básica, metadados e deduplicação aplicadas) |
+| **Carregamento** | **(x) Pendente** |
+| **Destino** | **(x) Pendente** |
+
 
 ***
 
