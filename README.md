@@ -27,15 +27,23 @@ O pipeline implementado no ambiente simulado (Google Colab) estabelece a camada 
 
 <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="python"/> &nbsp; <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas"/> &nbsp;  <img src="https://img.shields.io/badge/Dask-F8766D?style=for-the-badge&logo=dask&logoColor=white" alt="Dask"/> &nbsp; <img src="https://img.shields.io/badge/cuDF-7097C2?style=for-the-badge&logo=nvidia&logoColor=white" alt="cuDF"/>
 
-### 🚀 Sugestões de Refinamento (Tecnologias Pagas/Gerenciadas)
+### 🚀 Sugestões de Refinamento (Tecnologias Pagas/Gerenciadas na AWS)
 
-Para levar este pipeline a um ambiente de produção escalável e robusto, sugerimos a migração para o ecossistema Google Cloud Platform (GCP):
+Para levar o pipeline, que já utiliza aceleração por GPU (cuDF/Dask-cuDF), a um ambiente de produção escalável e robusto, sugerimos a migração para o ecossistema **Amazon Web Services (AWS)**:
 
-* **Armazenamento Central:** **Google Cloud Storage (GCS)** para o Data Lake e **Google BigQuery** para o Data Warehouse analítico.
-* **Orquestração:** **Google Cloud Composer** (Apache Airflow Gerenciado) para agendamento, monitoramento e gestão do fluxo de trabalho.
-* **Processamento em Escala:** **Google Cloud Dataproc** (Apache Spark Gerenciado) para processamento distribuído de grandes volumes de dados.
+* **Armazenamento e Data Lakehouse (S3 & Athena/Redshift):**
+    * O armazenamento central (Data Lake) deve ser persistido e escalado no **Amazon S3 (Simple Storage Service)**, ideal para armazenar os arquivos Parquet.
+    * O destino analítico deve ser o **Amazon Athena** (consultas *serverless* diretamente no S3) ou o **Amazon Redshift** (Data Warehouse), implementando a arquitetura *Lakehouse*.
 
-<img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white" alt="Google Cloud"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Airflow-017CEE?style=for-the-badge&logo=Apache-Airflow&logoColor=white" alt="Apache Airflow"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Spark-E25A1C?style=for-the-badge&logo=apache-spark&logoColor=white" alt="Apache Spark"/>
+* **Orquestração e Automação (MWAA & Step Functions):**
+    * O agendamento robusto e o monitoramento do *workflow* serão feitos com o **Amazon Managed Workflows for Apache Airflow (MWAA)**, mantendo a flexibilidade do Airflow.
+    * Para *workflows* mais específicos ou *serverless*, pode-se utilizar **AWS Step Functions**.
+
+* **Processamento Acelerado em Produção (AWS EMR & ECS/SageMaker):**
+    * O processamento distribuído em escala será garantido pelo **Amazon EMR** configurado para rodar *clusters* **Apache Spark** (sem MapReduce).
+    * Para manter a aceleração por GPU (Dask-cuDF/RAPIDS) em produção, sugere-se a utilização do **Amazon ECS (Elastic Container Service)** ou **Amazon SageMaker**, executando *containers* em instâncias **EC2** otimizadas com GPUs dedicadas (família P3/P4), garantindo a alta performance alcançada no Colab.
+
+<img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS"/> &nbsp; <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white" alt="Amazon S3"/> &nbsp; <img src="https://img.shields.io/badge/Amazon_Redshift-C02A36?style=for-the-badge&logo=amazonredshift&logoColor=white" alt="Amazon Redshift"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Airflow-017CEE?style=for-the-badge&logo=Apache-Airflow&logoColor=white" alt="Apache Airflow"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Spark-E25A1C?style=for-the-badge&logo=apache-spark&logoColor=white" alt="Apache Spark"/>
 
 ***
 
