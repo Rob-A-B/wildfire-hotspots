@@ -1,114 +1,102 @@
-# 🔥 Pipeline de Análise e Monitoramento de Focos de Queimadas 
+# 1. Introdução
 
-## 💻 Sobre o Projeto
+O Brasil enfrenta um crescimento contínuo no número de focos de queimadas monitorados por satélite, tornando a análise e o monitoramento destes eventos um desafio típico de Big Data. A volumetria elevada e a velocidade de geração dos dados inviabilizam abordagens tradicionais de processamento baseadas em CPU e bibliotecas como Pandas, que apresentam gargalos devido à limitação de memória e baixa capacidade de paralelização.
 
-O **Pipeline de Análise e Monitoramento de Focos de Queimadas** consiste em uma infraestrutura de dados (Data Pipeline) projetada para automatizar a ingestão, o processamento e a consolidação de dados históricos de focos de queimadas (incêndios florestais).
+Nesse contexto, este projeto propõe a construção de uma Plataforma Cloud para Big Data (PCB) capaz de realizar ingestão, transformação, análise exploratória e modelagem preditiva em escala massiva, utilizando aceleração por GPU e arquiteturas distribuídas.
 
-Esta aplicação foi desenvolvida como parte da atividade prática para demonstrar a implementação até camada **Silver** de um Data Lake (Lakehouse/Medallion Architecture) em um ambiente simulado. O objetivo final é criar uma base de dados limpa, particionada e consolidada em formato parquet, que servirá como fonte de dados confiável para análises geoespaciais e relatórios.
+# 2. Motivação e Justificativa
+## 2.1 Relevância do Tema
 
-### 🔗 Arquitetura Implementada 
+A análise dos focos de calor é fundamental para a gestão ambiental, o planejamento de combate a incêndios e a formulação de políticas públicas. A demora na obtenção de insights pode custar recursos naturais, vidas e agravar crises climáticas. A implementação de uma plataforma de Big Data eleva a qualidade da resposta governamental e científica ao permitir:
+- Detecção de Padrões: Identificação ágil de tendências sazonais e regionais de queimadas.
+- Modelagem Preditiva: Treinamento rápido de modelos para prever as variáveis de interesse.
+- Suporte à Decisão: Fornecimento de dados atualizados para equipes em campo e tomadores de decisão.
 
-O pipeline implementado no ambiente simulado (Google Colab) estabelece a camada **Bronze** do Data Lake com as seguintes características:
+# 2.2 Justificativa Tecnológica
 
-| Etapa | Lógica Implementada |
-| :--- | :--- |
-| **Ingestão** | Cópia de arquivos CSV de uma fonte externa (Drive) para o ambiente de processamento. |
-| **Armazenamento Raw** | Estrutura de particionamento hierárquico por data (`ano={yyyy}/mes={mm}`) para os CSVs originais. |
-| **Transformação**| Concatenamento de DataFrames, enriquecimento com metadados (`ano`, `mes`) e aplicação de **impenência** (remoção de duplicatas). |
-| **Armazenamento Final**  | Salvamento do conjunto de dados limpo e consolidado no formato **Parquet** e CSV. |
+A adoção de uma arquitetura distribuída de Big Data é motivada por:
+- Limitações de RAM: conjuntos de dados maiores que a memória inviabilizam o uso de Pandas/CPU.
+- Demanda de desempenho: análises exploratórias e ciclos de treinamento de modelos exigem múltiplas leituras e operações pesadas.
+- Escalabilidade: ambientes cloud distribuem carga, adaptam-se ao volume crescente de dados e eliminam a necessidade de migrações complexas.
 
-### 🛠 Tecnologias Utilizadas
+Assim, tecnologias como Dask-cuDF, GPU NVIDIA Tesla T4 e formato Parquet tornam-se essenciais para obter desempenho adequado.
 
-| Camada | Tecnologias Atuais (Open Source/Simuladas) |
-| :--- | :--- |
-| **Linguagem/Processamento** | Python, Pandas, Dask, cuDF |
-| **Ambiente/Orquestração** | Google Colab (Execução manual/interativa) |
-| **Armazenamento (Fonte/Destino)** | Google Drive (Fonte), File System do Colab (Destino), CSV, Parquet |
+# 3. Objetivo do Projeto
 
-<img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" alt="python"/> &nbsp; <img src="https://img.shields.io/badge/pandas-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="Pandas"/> &nbsp;  <img src="https://img.shields.io/badge/Dask-F8766D?style=for-the-badge&logo=dask&logoColor=white" alt="Dask"/> &nbsp; <img src="https://img.shields.io/badge/cuDF-7097C2?style=for-the-badge&logo=nvidia&logoColor=white" alt="cuDF"/>
+O objetivo principal deste projeto é desenvolver e implementar uma Plataforma Cloud para Big Data (PCB) capaz de processar, analisar e modelar os dados de focos de queimadas em escala massiva e com alta performance seguindo a arquitetura Medallion.
 
-### 🚀 Sugestões de Refinamento (Tecnologias Pagas/Gerenciadas na AWS)
+## 3.1 Objetivos Específicos
 
-Para levar o pipeline, que já utiliza aceleração por GPU (cuDF/Dask-cuDF), a um ambiente de produção escalável e robusto, sugerimos a migração para o ecossistema **Amazon Web Services (AWS)**:
+- Transformação e Consolidação (ETL): criação de pipelines para ingestão e transformação de dados brutos (Bronze) em versões limpas e otimizadas (Gold).
+- Análises Exploratórias em Escala: geração de visualizações complexas e séries temporais com baixa latência.
+- Modelagem Preditiva (ML): treinamento e avaliação de modelos de regressão para previsão de variáveis de interesse relacionadas a queimadas.
 
-* **Armazenamento e Data Lakehouse (S3 & Athena/Redshift):**
-    * O armazenamento central (Data Lake) deve ser persistido e escalado no **Amazon S3 (Simple Storage Service)**, ideal para armazenar os arquivos Parquet.
-    * O destino analítico deve ser o **Amazon Athena** (consultas *serverless* diretamente no S3) ou o **Amazon Redshift** (Data Warehouse), implementando a arquitetura *Lakehouse*.
+# 4. Metodologia (Pipeline de Dados)
 
-* **Orquestração e Automação (MWAA & Step Functions):**
-    * O agendamento robusto e o monitoramento do *workflow* serão feitos com o **Amazon Managed Workflows for Apache Airflow (MWAA)**, mantendo a flexibilidade do Airflow.
-    * Para *workflows* mais específicos ou *serverless*, pode-se utilizar **AWS Step Functions**.
+A metodologia envolve a construção de um pipeline robusto e acelerado para processar dados históricos de queimadas em ambiente distribuído.
 
-* **Processamento Acelerado em Produção (AWS EMR & ECS/SageMaker):**
-    * O processamento distribuído em escala será garantido pelo **Amazon EMR** configurado para rodar *clusters* **Apache Spark** (sem MapReduce).
-    * Para manter a aceleração por GPU (Dask-cuDF/RAPIDS) em produção, sugere-se a utilização do **Amazon ECS (Elastic Container Service)** ou **Amazon SageMaker**, executando *containers* em instâncias **EC2** otimizadas com GPUs dedicadas (família P3/P4), garantindo a alta performance alcançada no Colab.
+## 4.1 Arquitetura e Tecnologias
 
-<img src="https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white" alt="AWS"/> &nbsp; <img src="https://img.shields.io/badge/Amazon_S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white" alt="Amazon S3"/> &nbsp; <img src="https://img.shields.io/badge/Amazon_Redshift-C02A36?style=for-the-badge&logo=amazonredshift&logoColor=white" alt="Amazon Redshift"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Airflow-017CEE?style=for-the-badge&logo=Apache-Airflow&logoColor=white" alt="Apache Airflow"/> &nbsp; <img src="https://img.shields.io/badge/Apache_Spark-E25A1C?style=for-the-badge&logo=apache-spark&logoColor=white" alt="Apache Spark"/>
+A arquitetura utiliza princípios de Data Lake simulado e aceleração por GPU, adotando:
 
-***
-
-## 🗂 Como rodar o projeto (Ambiente Simulador)
-
-As instruções a seguir pressupõem a execução no ambiente interativo do Google Colab:
-
-```bash
-# 1. Carregar o arquivo 'queimadas.ipynb' no Google Colab.
-# 2. Executar as células de setup e importações iniciais.
-
-# 3. Montar o Google Drive para acessar a fonte de dados simulada (CSV):
-# from google.colab import drive
-# drive.mount('/content/drive')
-
-# 4. Executar o pipeline de Ingestão:
-#    - Criação da estrutura de pastas de destino.
-#    - Cópia dos CSVs da fonte para a pasta Bronze Raw particionada.
-
-# 5. Executar o pipeline de Transformação:
-#    - Leitura e concatenação dos DataFrames.
-#    - Aplicação da lógica de limpeza e remoção de duplicatas.
-
-# 6. Executar o pipeline de Armazenamento:
-#    - Salvamento do DataFrame consolidado no formato CSV e Parquet.
-```
-## 📝 Documento de Arquitetura
-
-### Fonte dos Dados
-
-| Campo | Conteúdo |
-| :--- | :--- |
-| **Fonte de Dados** | Arquivos CSV de focos de queimadas (Ex: dados do INPE/Monitoramento). |
-| **Localização da Fonte** | Google Drive (Simulação de fonte externa) |
-| **Formato de Entrada** | CSV (Comma Separated Values) |
-
-***
-
-## ✅ Checklist do Estado Atual
-
-A implementação atual no `queimadas.ipynb` reflete a conclusão das seguintes fases do pipeline:
-
-| Parte do Pipeline | Estado Atual (Ambiente Colab) |
-| :--- | :--- |
-| **Ingestão** | **(x) Finalizado** (Cópia da fonte para o Bronze Raw) |
-| **Armazenamento** | **(x) Finalizado** (Estrutura de Data Lake Bronze implementada) |
-| **Transformação** | **(x) Finalizado** (Limpeza básica, metadados e deduplicação aplicadas) |
-| **Carregamento** | **(x) Pendente** |
-| **Destino** | **(x) Pendente** |
+<img src="https://cdn.discordapp.com/attachments/958708354765705256/1445015539184566453/image.png?ex=692ecf17&is=692d7d97&hm=853ac428fd687c73bb1d70e8c1edb2772892188093186948b9148fec62051b0a&" alt= "Tabela de arquitetura"></img>
 
 
-***
+## 4.2 Pipeline Implementado (Prova de Conceito)
 
-## 🚀 Equipe e Divisão de Tarefas
+A PoC validou a capacidade da arquitetura distribuída, com ênfase na fase Silver/Gold.
 
-| Membro da Equipe | Função | Tarefas e Responsabilidades |
-| :--- | :--- | :--- |
-| **Julio Padilha** | **Engenheiro de dados(Otimização e Escalabilidade do Pipeline)** | Expandiu o dataset de 1 para 22 meses, realizando a concatenação e integração de arquivos. Implementou soluções de otimização de desempenho e memória com Dask e cuDF, aproveitando o processamento paralelo e o uso da GPU do Colab. |
-| **Matheus Bione** | **Suporte Técnico** | Verificando se os dados transformados mantêm integridade em relação à ingestão original. Realizou a organização de diretórios, limpeza de arquivos duplicados e padronização de nomes dentro do projeto. |
-| **Nicole Victory** | **Analista de dados(validação e qualidade dos dados)** | Criou scripts para verificação e limpeza dos datasets após a ingestão na camada Bronze, garantindo que os arquivos contenham as colunas esperadas e sem valores nulos críticos. Gerou relatórios automáticos de estatísticas e qualidade dos dados (profiling) para documentação e análise. |
-| **Roberto Arruda** | **Cientista de Dados (Ingestão e Modelagem)** |  Realizou a ingestão inicial dos dados, estruturando o pipeline nas camadas Bronze, Silver e Gold. Foi responsável pela organização da arquitetura de pastas, padronização do fluxo de dados e pela criação das primeiras transformações entre as camadas. |
+## 4.2.1 Fluxo de Processamento
 
+Fontes: dados CSV previamente limpos.
+Ingestão: carregamento dos dados para a camada Silver.
+Armazenamento: persistência em arquivos Parquet particionados.
+Transformação (Gold): utilização de Dask-cuDF para operações massivas de filtragem, agregação e manipulação de colunas.
+Aceleração por GPU: operações executadas em ambiente com NVIDIA Tesla T4, comprovando desempenho superior ao Pandas/CPU.
 
-***
+## 4.2.2 Arquitetura Parcial e Ganhos
 
-## 📝 Licença
+A PoC validou:
+- Configuração e utilização adequada de GPU e bibliotecas RAPIDS.
+- Throughput significativamente maior em leitura/transformação de Parquet.
+- Viabilidade técnica para escalonar o pipeline em cenários reais de Big Data.
 
-Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT).
+# 5. Resultados e Visualizações
+
+A análise dos dados tratados permitiu compreender o comportamento das queimadas entre biomas brasileiros.
+
+## 5.1 Distribuição Mensal
+
+Observou-se um pico de queimadas entre julho e outubro, período atípico pois coincide com o inverno brasileiro. Em biomas como Amazônia e Cerrado, fatores como estiagem prolongada, déficit hídrico e influência do fenômeno El Niño (2024) explicaram a intensificação dos eventos.
+
+## 5.2 Comparação Entre Biomas
+
+Cerrado: vegetação seca, baixa umidade e clima sazonal explicam queimadas naturais, embora a ação humana também seja significativa.
+Amazônia: grande parte das queimadas possui origem antropogênica; o ano de 2024 mostrou anomalias ligadas ao El Niño e à ausência da Zona de Convergência Intertropical (ZCIT).
+
+## 5.3 Modelagem Preditiva
+
+Dois modelos se destacaram:
+
+Random Forest: identificou o pico anômalo de 2024 como padrão recorrente, falhando ao prever 2025.
+Seasonal Ratio Forecasting: reconheceu a anomalia e previu 2025 com maior aderência aos dados reais.
+
+# 6. Conclusão
+## 6.1 Análise Crítica dos Resultados
+
+O projeto demonstrou a viabilidade de uma arquitetura Big Data acelerada por GPU para processamento massivo de dados de queimadas.
+
+A análise revelou padrões climatológicos consistentes e destacou a necessidade de distinguir eventos naturais de queimadas causadas por intervenções humanas. Modelos preditivos apresentaram diferentes sensibilidades a anomalias climáticas, com maior eficácia dos métodos sazonais em cenários com variabilidade extrema.
+
+## 6.2 Dificuldades Encontradas
+
+Limitações de hardware tradicional (RAM insuficiente).
+Interpretação de anomalias climáticas em séries históricas (ex.: El Niño).
+Complexidade de diferenciar causas naturais e antropogênicas.
+
+## 6.3 Trabalhos Futuros
+
+Expansão do pipeline para todo o histórico de queimadas.
+Integração de dados meteorológicos e socioeconômicos.
+Avaliação de modelos híbridos e Deep Learning.
+Desenvolvimento de dashboards de monitoramento em tempo real.
